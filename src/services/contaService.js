@@ -20,10 +20,10 @@ module.exports = {
       return { mensagem: error }; // *readme 2
     }
   },
-  incluiConta: (request, response) => {
+  incluiConta: async (request, response) => {
     let novaConta = request.body;
     try {
-      return novaConta = await contaModels
+      return novaConta = await contaModels.create(novaConta)
     } catch (error) {
       return{
         mensagem: error,
