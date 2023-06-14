@@ -1,6 +1,5 @@
 'use strict'
 let contas = require("../contasdb");
-const contaModels = require("../models/contaModels");
 const ContaModel = require('../models/contaModels')
 
 module.exports = {
@@ -8,40 +7,70 @@ module.exports = {
   //   return contas;
   // },
 
-  listarTodasAsContas: (request, response) => {
-    response.json(contas)
-  },
-
-  buscarPorId: async (id) => {
-      try {
-      const contaEncontrada = await ContaModel.findOne({_id: id});
-      return contaEncontrada;
-    } catch (error) {
-      return { mensagem: error }; // *readme 2
-    }
-  },
-  incluiConta: async (request, response) => {
-    let novaConta = request.body;
+  listarTodasAsContas: async () => {
     try {
-      return novaConta = await contaModels.create(novaConta)
+      const contasCadastradas = await ContaModel.find();
+      return contasCadastradas;
     } catch (error) {
-      return{
-        mensagem: error,
-        sucess: false,
-        
+      throw {
+        message: error.message,
+        status: 500,
+        success: false,
       }
     }
   },
 
-  editaConta: (request, response) => {
-    let contaId = Number(request.params.id);
-    let indexContaEncontrada = contas.findIndex((conta) => conta.id === contaId);
-
-    if (indexContaEncontrada === -1) {
-      return response.status(404).json({ mensagem: "Conta não encontrada!" });
+  buscarPorId: async (id) => {
+    try {
+      return await ContaModel.findOne({ _id: id });
+    } catch (error) {
+      throw {
+        message: error.message,
+        status: 500,
+        success: false,
+      }
     }
-    let novaConta = request.body;
-    contas[indexContaEncontrada] = { ...novaConta };
-    response.json({ mensagem: "Conta alterada com sucesso" })
-  }
+  },
+
+  incluiConta: async (conta) => {
+    try {
+      const novaConta = await ContaModel.create(conta)
+      return novaConta;
+    } catch (error) {
+     return {
+        mensagem: error,
+        sucess: false,
+        status: 404,
+      }
+    }
+  },
+
+  editaConta:  async (id, novasInformacoes) => {
+    try {
+      let contaEncontrada = await ContaModel.findById(id);
+
+      if (!contaEncontrada) {
+        throw {
+          message: 'Não foi possível localizar a conta',
+          status: 404,
+          success: false,
+        }
+      }
+
+      const contaAtualizada = await ContaModel.findByIdAndUpdate(
+        id,
+        { ...novasInformacoes },
+        { new: true }
+      );
+
+      return contaAtualizada; 
+    } catch (error) {
+      console.error(error);
+      throw {
+        message: error.message,
+        status: 500,
+        success: false,
+      }
+    }
+  },
 }

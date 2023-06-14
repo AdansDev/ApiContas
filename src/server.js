@@ -5,7 +5,8 @@ const cors = require("cors");
 const api = express();
 const contaRoute = require("./routes/contaRoute");
 const infoRoute = require("./routes/InfoRoute")
-const db = require ('./db').connect();
+const db = require ('./db/index').connect();
+
 db.then(()=> {
     console.log("Banco de dados conectado com sucesso!");
 }).catch((error) =>{
