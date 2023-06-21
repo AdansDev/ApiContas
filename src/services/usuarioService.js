@@ -1,12 +1,12 @@
 'use strict'
-const ContaModel = require('../models/contaModels')
+const bcrypt = require('bcrypt')
+const usuarioModel = require('../models/usuarioModel')
 
 module.exports = {
- 
-  listarTodasAsContas: async () => {
+  
+  listar: async () => {
     try {
-      const contasCadastradas = await ContaModel.find();
-      return contasCadastradas;
+      return  await usuarioModel.find();      
     } catch (error) {
       throw {
         message: error.message,
@@ -18,7 +18,7 @@ module.exports = {
 
   buscarPorId: async (id) => {
     try {
-      return await ContaModel.findOne({ _id: id });
+      return await usuarioModel.findOne({ _id: id });
     } catch (error) {
       throw {
         message: error.message,
@@ -28,12 +28,12 @@ module.exports = {
     }
   },
 
-  incluiConta: async (conta) => {
+  inclui: async (dados) => {
     try {
-      const novaConta = await ContaModel.create(conta)
-      return novaConta;
-    } catch (error) {
-      return {
+      dados.senha = await bcrypt.hash(dados.senha, 10)
+      return await usuarioModel.create(dados)
+      } catch (error) {
+     return {
         mensagem: error,
         sucess: false,
         status: 404,
@@ -41,23 +41,22 @@ module.exports = {
     }
   },
 
-  editaConta: async (id, novasInformacoes) => {
+  edita:  async (id, novasInformacoes) => {
     try {
-      // let contaEncontrada = await ContaModel.findById(id); exemplo de variavel para localizar um iD
-
-      const contaAtualizada = await ContaModel.findByIdAndUpdate(
+     
+      const dadosAtualzados = await usuarioModel.findByIdAndUpdate(
         id,
         { ...novasInformacoes },
-        { new: true }
+        { new: true } 
       );
-      if (!contaAtualizada) {
+      if (!dadosAtualzados) {
         throw {
           message: 'Não foi possível localizar a conta',
           status: 404,
           success: false,
         }
       }
-      return contaAtualizada;
+      return dadosAtualzados; 
     } catch (error) {
       console.error(error);
       return {
@@ -69,18 +68,19 @@ module.exports = {
   },
   Exclui: async (conta) => {
     try {
-      const remove = await ContaModel.findByIdAndRemove(conta)
+      const remove = await usuarioModel.findByIdAndRemove(conta)
       if(!remove)
       throw {
-        mensagem: 'Erro, conta não encontrada!!',
+        mensagem: 'Erro, Usuário não encontrado!!',
       }
       return remove;
     } catch (error) {
       return {
-        mensagem: 'Erro, conta não encontrada!!',
+        mensagem: 'Erro, Usuário não encontrado!!',
         sucess: false,
         status: 404,
       }
     }
-  },
+  }
+  
 }
