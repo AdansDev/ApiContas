@@ -1,35 +1,40 @@
 'use strict'
 const bcrypt = require('bcrypt')
-const usuarioModel = require('../models/usuarioModel')
+const usuarioModel = require('../models/usuarioModel');
+const { gerarToken } = require('../utils/TokenUtil');
 
 module.exports = {
-  
+
   autenticar: async (usuario) => {
     try {
       const usuarioEncontrado = await usuarioModel.findOne({ email: usuario.email });
       if
-      (!usuarioEncontrado)
-      return{
-        mensagem: "Credenciais Inválidas",
-        status: 404,
-        success: false,
-      }
+        (!usuarioEncontrado)
+        return {
+          mensagem: "Credenciais Inválidas",
+          status: 404,
+          success: false,
+        }
       const senhaValida = await bcrypt.compare(usuario.senha, usuarioEncontrado.senha);
-        
-      if(!senhaValida)
-      return {
-        mensagem: "Credenciais Inválidas",
-        status: 404,
-        success: false,
-      }
 
-      return{
-        id: usuarioEncontrado._id,
-        nome: usuarioEncontrado.nome,
-        success: true,
+      if (!senhaValida)
+        return {
+          mensagem: "Credenciais Inválidas",
+          status: 404,
+          success: false,
+        }
+
+      const token = gerarToken(JSON.stringify(usuarioEncontrado));
+
+      return {
+        // id: usuarioEncontrado._id,
+        // nome: usuarioEncontrado.nome,
+        // success: true,
+        message: "Login realizado com sucesso",
+        token,
       };
     } catch (error) {
-      throw {
+      return {
         message: error.message,
         status: 404,
         success: false,
