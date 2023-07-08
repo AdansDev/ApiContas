@@ -7,29 +7,29 @@ module.exports = {
 
   autenticar: async (usuario) => {
     try {
+      console.log('usuario :>> ', usuario);
       const usuarioEncontrado = await usuarioModel.findOne({ email: usuario.email });
-      if
-        (!usuarioEncontrado)
+      console.log(usuarioEncontrado);
+      if (!usuarioEncontrado) {
         return {
-          mensagem: "Credenciais Inválidas",
+          mensagem: "Credenciais Inválidas 1",
           status: 404,
           success: false,
         }
+      }
       const senhaValida = await bcrypt.compare(usuario.senha, usuarioEncontrado.senha);
 
-      if (!senhaValida)
+      if (!senhaValida) {
         return {
-          mensagem: "Credenciais Inválidas",
+          mensagem: "Credenciais Inválidas 2",
           status: 404,
           success: false,
-        }
+        };
+      }
 
       const token = gerarToken(JSON.stringify(usuarioEncontrado));
 
       return {
-        // id: usuarioEncontrado._id,
-        // nome: usuarioEncontrado.nome,
-        // success: true,
         message: "Login realizado com sucesso",
         token,
       };

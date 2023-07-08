@@ -16,6 +16,7 @@ router.get("/:id", async (request, response) => {
 router.post("", async (request, response) => {
   const contaIncluida = await contaService.incluiConta(request.body);
   return response.json(contaIncluida);
+  console.log(contaIncluida);
 });
 
 router.put("/:id", async (request, response) => {

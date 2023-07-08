@@ -44,19 +44,19 @@ module.exports = {
   edita:  async (id, novasInformacoes) => {
     try {
      
-      const dadosAtualzados = await usuarioModel.findByIdAndUpdate(
+      const dadosAtualizados = await usuarioModel.findByIdAndUpdate(
         id,
         { ...novasInformacoes },
         { new: true } 
       );
-      if (!dadosAtualzados) {
+      if (!dadosAtualizados) {
         throw {
           message: 'Não foi possível localizar a conta',
           status: 404,
           success: false,
         }
       }
-      return dadosAtualzados; 
+      return dadosAtualizados; 
     } catch (error) {
       console.error(error);
       return {
