@@ -7,22 +7,22 @@ module.exports = {
 
   autenticar: async (usuario) => {
     try {
-      console.log('usuario :>> ', usuario);
       const usuarioEncontrado = await usuarioModel.findOne({ email: usuario.email });
-      console.log(usuarioEncontrado);
+
       if (!usuarioEncontrado) {
         return {
-          mensagem: "Credenciais Inválidas 1",
-          status: 404,
+          message: "Credenciais Inválidas 1",
+          status: 401,
           success: false,
         }
       }
+
       const senhaValida = await bcrypt.compare(usuario.senha, usuarioEncontrado.senha);
 
       if (!senhaValida) {
         return {
-          mensagem: "Credenciais Inválidas 2",
-          status: 404,
+          message: "Credenciais Inválidas 2",
+          status: 401,
           success: false,
         };
       }
@@ -31,6 +31,8 @@ module.exports = {
 
       return {
         message: "Login realizado com sucesso",
+        status: 200,
+        success: true,
         token,
       };
     } catch (error) {
