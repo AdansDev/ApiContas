@@ -4,12 +4,15 @@
 const express = require("express");
 const cors = require("cors");
 const api = express();
+api.use(express.json());
+
 const db = require("./db").connect();
 
 const middlewareLog = require('./middlewares/log')
 const { verificarToken } = require("./middlewares/auttenticacaoMiddleware");
 const contaRoute = require("./routes/contaRoute");
 const usuarioRoute = require('./routes/usuarioRoute')
+
 const loginRoute = require('./routes/loginRoute');
 
 db.then(() => {
@@ -24,7 +27,6 @@ api.use(
   })
 );
 
-api.use(express.json());
 
 api.get("/info", (request, response) => {
   response.json({

@@ -4,6 +4,7 @@ const router = express.Router();
 const loginService = require('../services/loginService');
 
 router.post("", async (request, response) => {
+    console.log('request :>> ', request);
     const result = await loginService.autenticar(request.body);
 
     if (!result.success) {

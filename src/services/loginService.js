@@ -10,6 +10,7 @@ module.exports = {
       const usuarioEncontrado = await usuarioModel.findOne({ email: usuario.email });
 
       if (!usuarioEncontrado) {
+        console.log('usuarioEncontrado :>> ', usuarioEncontrado);
         return {
           message: "Credenciais Inválidas 1",
           status: 401,
